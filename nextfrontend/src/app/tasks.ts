@@ -9,6 +9,7 @@ export interface Task {
 
 interface TaskStore {
   tasks: Task[];
+  themes: string[];
   createTask: () => void;
   //   editTask: (index: number, updatedTask: Partial<Task>) => void;
   editingCell: { index: number | null; column: keyof Task | null };
@@ -22,6 +23,7 @@ interface TaskStore {
 
 const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
+  themes: [],
   createTask: () =>
     set((state) => {
       const newTask: Task = {

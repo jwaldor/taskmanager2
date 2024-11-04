@@ -82,6 +82,7 @@ export default function AllTasks() {
             <TableHead className="w-[200px]">Name</TableHead>
             <TableHead className="w-[300px]">Description</TableHead>
             <TableHead className="w-[150px]">Status</TableHead>
+            <TableHead className="w-[150px]">Theme</TableHead> {/* Added Theme Column */}
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -90,6 +91,7 @@ export default function AllTasks() {
               <TableCell className="font-medium">{renderCell(task, index, "title")}</TableCell>
               <TableCell>{renderCell(task, index, "description")}</TableCell>
               <TableCell>{renderCell(task, index, "state")}</TableCell>
+              <TableCell>{renderCell(task, index, "theme")}</TableCell> {/* Added Theme Cell */}
             </TableRow>
           ))}
         </TableBody>
