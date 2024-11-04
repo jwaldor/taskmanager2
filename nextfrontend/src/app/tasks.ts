@@ -35,11 +35,14 @@ interface TaskStore {
   startEditing: (index: number, column: keyof Task, value: string) => void;
   deleteTask: (index: number) => void;
   editThemeSecondary: (key: keyof Theme["secondary"], value: string) => void;
+  setCurrentTheme: (theme: Theme["name"]) => void;
 }
 
 const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
   currentTheme: "light",
+  setCurrentTheme: (theme: Theme["name"]) =>
+    set(() => ({ currentTheme: theme })),
   editingTheme: {
     name: "light",
     background: "#ffffff",
@@ -53,9 +56,14 @@ const useTaskStore = create<TaskStore>((set) => ({
     accent: "#000000",
   },
   createTheme: () => {
-    set((state) => ({
-      themes: [...state.themes, state.editingTheme],
-    }));
+    set((state) => {
+      if (
+        !state.themes.find((theme) => theme.name === state.editingTheme.name)
+      ) {
+        return { themes: [...state.themes, state.editingTheme] };
+      }
+      return { themes: state.themes };
+    });
   },
   editTheme: (updatedTheme: Partial<Theme>) => {
     set((state) => {
