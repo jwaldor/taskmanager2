@@ -34,6 +34,7 @@ interface TaskStore {
   saveEdit: (taskIndex: number, updatedTask: Partial<Task>) => void;
   startEditing: (index: number, column: keyof Task, value: string) => void;
   deleteTask: (index: number) => void;
+  editThemeSecondary: (key: keyof Theme["secondary"], value: string) => void;
 }
 
 const useTaskStore = create<TaskStore>((set) => ({
@@ -59,6 +60,15 @@ const useTaskStore = create<TaskStore>((set) => ({
   editTheme: (updatedTheme: Partial<Theme>) => {
     set((state) => {
       const editingTheme = { ...state.editingTheme, ...updatedTheme };
+      return { editingTheme };
+    });
+  },
+  editThemeSecondary: (key: keyof Theme["secondary"], value: string) => {
+    set((state) => {
+      const editingTheme = {
+        ...state.editingTheme,
+        secondary: { ...state.editingTheme.secondary, [key]: value },
+      };
       return { editingTheme };
     });
   },

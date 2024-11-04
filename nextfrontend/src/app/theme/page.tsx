@@ -7,14 +7,14 @@ import { useState } from 'react'
 import { Input } from "@/components/ui/input"
 
 export default function Theme() {
-  const { themes, createTheme, editTheme, editingTheme } = useTaskStore()
+  const { themes, createTheme, editTheme, editingTheme, editThemeSecondary } = useTaskStore()
   const [showPicker, setShowPicker] = useState<string | null>(null)
 
-  const handleColorChange = (color: string, property: keyof Theme) => {
-    if (editingTheme) {
-      editTheme({ [property]: color })
-    }
-  }
+  // const handleColorChange = (color: string, property: keyof Theme) => {
+  //   if (editingTheme) {
+  //     editTheme({ [property]: color })
+  //   }
+  // }
 
   return (
     <div className="w-full h-full">
@@ -47,7 +47,7 @@ export default function Theme() {
                     <div className="absolute z-10 mt-2">
                       <ChromePicker
                         color={value}
-                        onChange={(color) => handleColorChange(color.hex, key as keyof Theme)}
+                        onChange={(color) => editTheme({ [key]: color.hex })}
                       />
                     </div>
                   )}
@@ -66,7 +66,7 @@ export default function Theme() {
                   <div className="absolute z-10 mt-2">
                     <ChromePicker
                       color={value}
-                      onChange={(color) => handleColorChange(color.hex, key as keyof Theme)}
+                      onChange={(color) => editThemeSecondary(key as keyof Theme["secondary"], color.hex)}
                     />
                   </div>
                 )}
