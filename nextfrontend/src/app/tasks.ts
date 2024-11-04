@@ -23,7 +23,7 @@ interface TaskStore {
 
 const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
-  themes: [],
+  themes: ["light", "dark"],
   createTask: () =>
     set((state) => {
       const newTask: Task = {

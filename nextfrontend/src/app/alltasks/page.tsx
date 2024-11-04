@@ -16,7 +16,7 @@ import { Check, X, Edit2 } from "lucide-react"
 import useTaskStore from '../tasks' // Adjust the import path based on your project structure
 
 export default function AllTasks() {
-  const { tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing } = useTaskStore()
+  const { themes, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing } = useTaskStore()
 
 
   // const startEditing = (rowIndex: number, column: string, value: string) => {
@@ -42,12 +42,26 @@ export default function AllTasks() {
     if (isEditing) {
       return (
         <div className="flex items-center space-x-2">
-          <Input
-            value={editValue}
-            onChange={(e) => setEditValue(e.target.value)}
-            className="w-full"
-            autoFocus
-          />
+          {column === "theme" ? (
+            <select
+              className="w-full"
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+            >
+              {themes.map((theme, index) => (
+                <option key={index} value={theme}>
+                  {theme}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <Input
+              value={editValue}
+              onChange={(e) => setEditValue(e.target.value)}
+              className="w-full"
+              autoFocus
+            />
+          )}
           <Button size="icon" onClick={() => saveEdit(rowIndex, { [column]: editValue })} aria-label="Save">
             <Check className="h-4 w-4" />
           </Button>
@@ -82,6 +96,7 @@ export default function AllTasks() {
             <TableHead className="w-[200px]">Name</TableHead>
             <TableHead className="w-[300px]">Description</TableHead>
             <TableHead className="w-[150px]">Status</TableHead>
+            <TableHead className="w-[150px]">Theme</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -90,6 +105,7 @@ export default function AllTasks() {
               <TableCell className="font-medium">{renderCell(task, index, "title")}</TableCell>
               <TableCell>{renderCell(task, index, "description")}</TableCell>
               <TableCell>{renderCell(task, index, "state")}</TableCell>
+              <TableCell>{renderCell(task, index, "theme")}</TableCell>
             </TableRow>
           ))}
         </TableBody>
