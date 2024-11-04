@@ -18,23 +18,6 @@ import useTaskStore from '../tasks' // Adjust the import path based on your proj
 export default function AllTasks() {
   const { themes, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing } = useTaskStore()
 
-
-  // const startEditing = (rowIndex: number, column: string, value: string) => {
-  //   setEditingCell({ rowIndex, column })
-  //   setEditValue(value)
-  // }
-
-  // const cancelEditing = () => {
-  //   setEditingCell({ rowIndex: -1, column: "" })
-  //   setEditValue("")
-  // }
-
-  // const saveEdit = (taskIndex: number) => {
-  //   const updatedTask = { ...tasks[taskIndex], [editingCell.column]: editValue }
-  //   editTask(taskIndex, updatedTask)
-  //   cancelEditing()
-  // }
-
   const renderCell = (task: Task, rowIndex: number, column: keyof Task) => {
     const isEditing = editingCell.index === rowIndex && editingCell.column === column
     const value = task[column]
@@ -49,8 +32,8 @@ export default function AllTasks() {
               onChange={(e) => setEditValue(e.target.value)}
             >
               {themes.map((theme, index) => (
-                <option key={index} value={theme}>
-                  {theme}
+                <option key={index} value={theme.name}>
+                  {theme.name}
                 </option>
               ))}
             </select>

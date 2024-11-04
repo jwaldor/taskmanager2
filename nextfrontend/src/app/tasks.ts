@@ -1,5 +1,14 @@
 import { create } from "zustand";
 
+interface Theme {
+  name: string;
+  background: string;
+  text: string;
+  primary: string;
+  secondary: string;
+  accent: string;
+}
+
 export interface Task {
   title: string;
   description: string;
@@ -9,7 +18,7 @@ export interface Task {
 
 interface TaskStore {
   tasks: Task[];
-  themes: string[];
+  themes: Theme[];
   createTask: () => void;
   //   editTask: (index: number, updatedTask: Partial<Task>) => void;
   editingCell: { index: number | null; column: keyof Task | null };
@@ -23,7 +32,24 @@ interface TaskStore {
 
 const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
-  themes: ["light", "dark"],
+  themes: [
+    {
+      name: "light",
+      background: "#ffffff",
+      text: "#000000",
+      primary: "#000000",
+      secondary: "#ffffff",
+      accent: "#000000",
+    },
+    {
+      name: "dark",
+      background: "#000000",
+      text: "#ffffff",
+      primary: "#ffffff",
+      secondary: "#000000",
+      accent: "#ffffff",
+    },
+  ],
   createTask: () =>
     set((state) => {
       const newTask: Task = {
