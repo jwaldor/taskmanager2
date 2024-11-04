@@ -1,7 +1,7 @@
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Task } from "@/app/tasks"
+import { Task, TaskState } from "@/app/tasks"
 import { Check, X, Edit2 } from "lucide-react"
 import { Theme } from "../tasks"
 import { TableCell } from "@/components/ui/table"
@@ -38,9 +38,9 @@ export function RenderCell({ task, rowIndex, column, editingCell, editValue, set
               onChange={(e) => setEditValue(e.target.value)}
               style={{ color: taskTheme.text, backgroundColor: taskTheme.background }}
             >
-              {themes.map((theme, index) => (
-                <option key={index} value={theme.name}>
-                  {theme.name}
+              {Object.values(TaskState).map((state, index) => (
+                <option key={index} value={state}>
+                  {state}
                 </option>
               ))}
             </select>
