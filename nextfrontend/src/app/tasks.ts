@@ -5,7 +5,7 @@ interface Theme {
   background: string;
   text: string;
   primary: string;
-  secondary: string;
+  secondary: { pending: string; inProgress: string; completed: string };
   accent: string;
 }
 
@@ -38,7 +38,11 @@ const useTaskStore = create<TaskStore>((set) => ({
       background: "#ffffff",
       text: "#000000",
       primary: "#000000",
-      secondary: "#ffffff",
+      secondary: {
+        pending: "#ffcc00", // Yellow for pending
+        inProgress: "#007bff", // Blue for in-progress
+        completed: "#28a745", // Green for completed
+      },
       accent: "#000000",
     },
     {
@@ -46,7 +50,11 @@ const useTaskStore = create<TaskStore>((set) => ({
       background: "#000000",
       text: "#ffffff",
       primary: "#ffffff",
-      secondary: "#000000",
+      secondary: {
+        pending: "#ffcc00", // Yellow for pending
+        inProgress: "#007bff", // Blue for in-progress
+        completed: "#28a745", // Green for completed
+      },
       accent: "#ffffff",
     },
   ],

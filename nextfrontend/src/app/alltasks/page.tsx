@@ -22,14 +22,30 @@ export default function AllTasks() {
     const isEditing = editingCell.index === rowIndex && editingCell.column === column
     const value = task[column]
 
+    // Find the theme object for this task
+    const taskTheme = themes.find(t => t.name === task.theme) || themes[0]
+
+    // Define the text color based on the column
+    const getTextColor = () => {
+      switch (column) {
+        case 'title':
+          return taskTheme.primary
+        case 'state':
+          return taskTheme.secondary[task.state.replace('-', '') as keyof typeof taskTheme.secondary]
+        default:
+          return taskTheme.text
+      }
+    }
+
     if (isEditing) {
       return (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2" style={{ backgroundColor: taskTheme.background }}>
           {column === "theme" ? (
             <select
               className="w-full"
               value={editValue}
               onChange={(e) => setEditValue(e.target.value)}
+              style={{ color: taskTheme.text, backgroundColor: taskTheme.background }}
             >
               {themes.map((theme, index) => (
                 <option key={index} value={theme.name}>
@@ -43,28 +59,32 @@ export default function AllTasks() {
               onChange={(e) => setEditValue(e.target.value)}
               className="w-full"
               autoFocus
+              style={{ color: getTextColor(), backgroundColor: taskTheme.background }}
             />
           )}
           <Button size="icon" onClick={() => saveEdit(rowIndex, { [column]: editValue })} aria-label="Save">
-            <Check className="h-4 w-4" />
+            <Check className="h-4 w-4" style={{ color: taskTheme.accent }} />
           </Button>
           <Button size="icon" variant="outline" onClick={cancelEditing} aria-label="Cancel">
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" style={{ color: taskTheme.accent }} />
           </Button>
         </div>
       )
     }
 
     return (
-      <div className="flex items-center justify-between">
-        <span>{value}</span>
+      <div
+        className="flex items-center justify-between"
+        style={{ backgroundColor: taskTheme.background }}
+      >
+        <span style={{ color: getTextColor() }}>{value}</span>
         <Button
           size="icon"
           variant="ghost"
           onClick={() => startEditing(rowIndex, column, value)}
           aria-label={`Edit ${column}`}
         >
-          <Edit2 className="h-4 w-4" />
+          <Edit2 className="h-4 w-4" style={{ color: taskTheme.accent }} />
         </Button>
       </div>
     )
@@ -83,14 +103,17 @@ export default function AllTasks() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {tasks.map((task, index) => (
-            <TableRow key={index}>
-              <TableCell className="font-medium">{renderCell(task, index, "title")}</TableCell>
-              <TableCell>{renderCell(task, index, "description")}</TableCell>
-              <TableCell>{renderCell(task, index, "state")}</TableCell>
-              <TableCell>{renderCell(task, index, "theme")}</TableCell>
-            </TableRow>
-          ))}
+          {tasks.map((task, index) => {
+            const taskTheme = themes.find(t => t.name === task.theme) || themes[0]
+            return (
+              <TableRow key={index} style={{ backgroundColor: taskTheme.background }}>
+                <TableCell className="font-medium">{renderCell(task, index, "title")}</TableCell>
+                <TableCell>{renderCell(task, index, "description")}</TableCell>
+                <TableCell>{renderCell(task, index, "state")}</TableCell>
+                <TableCell>{renderCell(task, index, "theme")}</TableCell>
+              </TableRow>
+            )
+          })}
         </TableBody>
       </Table>
       <div className="flex justify-end mb-4">
@@ -103,6 +126,7 @@ export default function AllTasks() {
           Add Task
         </Button>
       </div>
+
     </div>
   )
 }
