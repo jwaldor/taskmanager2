@@ -1,18 +1,23 @@
 import { create } from "zustand";
 
+export enum TaskState {
+  Pending = "pending",
+  InProgress = "inProgress",
+  Completed = "completed",
+}
 export interface Theme {
   name: string;
   background: string;
   text: string;
   primary: string;
-  secondary: { pending: string; inProgress: string; completed: string };
+  secondary: { [key in TaskState]: string };
   accent: string;
 }
 
 export interface Task {
   title: string;
   description: string;
-  state: "pending" | "in-progress" | "completed";
+  state: TaskState;
   theme: string;
 }
 
@@ -111,7 +116,7 @@ const useTaskStore = create<TaskStore>((set) => ({
       const newTask: Task = {
         title: "",
         description: "",
-        state: "pending",
+        state: TaskState.Pending,
         theme: state.themes[0].name,
       };
       return { tasks: [...state.tasks, newTask] };

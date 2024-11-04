@@ -31,7 +31,7 @@ export function RenderCell({ task, rowIndex, column, editingCell, editValue, set
     if (isEditing) {
       return (
         <div className="flex items-center space-x-2" style={{ backgroundColor: taskTheme.background }}>
-          {column === "theme" ? (
+          {column === "state" ? (
             <select
               className="w-full"
               value={editValue}

@@ -16,8 +16,8 @@ export default function Navigation() {
                     {pathname !== "/alltasks" && (
                         <a href="/alltasks" className="text-white hover:text-gray-300">All Tasks</a>
                     )}
-                    {pathname !== "/tabs" && (
-                        <a href="/tabs" className="text-white hover:text-gray-300">Tab View</a>
+                    {pathname !== "/tabview" && (
+                        <a href="/tabview" className="text-white hover:text-gray-300">Tab View</a>
                     )}
                     {pathname !== "/theme" && (
                         <a href="/theme" className="text-white hover:text-gray-300">Set Theme</a>

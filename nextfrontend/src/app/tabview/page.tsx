@@ -4,128 +4,62 @@ import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Task } from "@/app/tasks"
-import { Check, X, Edit2 } from "lucide-react"
+import { TaskRow } from "../components/Task"
+import { TaskState } from "@/app/tasks"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import useTaskStore from '../tasks' // Adjust the import path based on your project structure
 
 export default function AllTasks() {
-  const { themes, currentTheme, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, deleteTask, createTask } = useTaskStore()
+  const { themes, currentTheme, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, deleteTask } = useTaskStore()
 
-  const renderCell = (task: Task, rowIndex: number, column: keyof Task) => {
-    const isEditing = editingCell.index === rowIndex && editingCell.column === column
-    const value = task[column]
-
-    // Find the theme object for this task
-    const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
-
-    // Define the text color based on the column
-    const getTextColor = () => {
-      switch (column) {
-        case 'title':
-          return taskTheme.primary
-        case 'state':
-          return taskTheme.secondary[task.state.replace('-', '') as keyof typeof taskTheme.secondary]
-        default:
-          return taskTheme.text
-      }
-    }
-
-    if (isEditing) {
-      return (
-        <div className="flex items-center space-x-2" style={{ backgroundColor: taskTheme.background }}>
-          {column === "theme" ? (
-            <select
-              className="w-full"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              style={{ color: taskTheme.text, backgroundColor: taskTheme.background }}
-            >
-              {themes.map((theme, index) => (
-                <option key={index} value={theme.name}>
-                  {theme.name}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <Input
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              className="w-full"
-              autoFocus
-              style={{ color: getTextColor(), backgroundColor: taskTheme.background }}
-            />
-          )}
-          <Button size="icon" onClick={() => saveEdit(rowIndex, { [column]: editValue })} aria-label="Save">
-            <Check className="h-4 w-4" style={{ color: taskTheme.accent }} />
-          </Button>
-          <Button size="icon" variant="outline" onClick={cancelEditing} aria-label="Cancel">
-            <X className="h-4 w-4" style={{ color: taskTheme.accent }} />
-          </Button>
-        </div>
-      )
-    }
-
-    return (
-      <div
-        className="flex items-center justify-between"
-        style={{ backgroundColor: taskTheme.background }}
-      >
-        <span style={{ color: getTextColor() }}>{value}</span>
-        <Button
-          size="icon"
-          variant="ghost"
-          onClick={() => startEditing(rowIndex, column, value)}
-          aria-label={`Edit ${column}`}
-        >
-          <Edit2 className="h-4 w-4" style={{ color: taskTheme.accent }} />
-        </Button>
-      </div>
-    )
-  }
+  const taskStates = Object.values(TaskState)
 
   return (
     <div className="w-full h-full overflow-auto">
-      <Table>
-        <TableCaption>A list of your editable tasks.</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[200px]">Name</TableHead>
-            <TableHead className="w-[300px]">Description</TableHead>
-            <TableHead className="w-[150px]">Status</TableHead>
-            <TableHead className="w-[50px]">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {tasks.map((task, index) => {
+      <Tabs defaultValue={taskStates[0]} className="mb-4">
+        <TabsList className="flex flex-row justify-between bg-gray-800">
+          {taskStates.map((state) => {
             const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
             return (
-              <TableRow key={index} style={{ backgroundColor: taskTheme.background }}>
-                <TableCell className="font-medium">{renderCell(task, index, "title")}</TableCell>
-                <TableCell>{renderCell(task, index, "description")}</TableCell>
-                <TableCell>{renderCell(task, index, "state")}</TableCell>
-                <TableCell>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => deleteTask(index)}
-                    aria-label="Delete task"
-                  >
-                    <X className="h-4 w-4" style={{ color: taskTheme.accent }} />
-                  </Button>
-                </TableCell>
-              </TableRow>
+              <TabsTrigger
+                className=""
+                key={state}
+                value={state}
+                style={{ backgroundColor: taskTheme.secondary[state], color: taskTheme.text }}
+              >
+                {state.charAt(0).toUpperCase() + state.slice(1)}
+              </TabsTrigger>
             )
           })}
-        </TableBody>
-      </Table>
-      <div className="flex justify-end mb-4">
+        </TabsList>
+        {taskStates.map((state) => (
+          <TabsContent key={state} value={state}>
+            <Table>
+              <TableCaption>A list of your editable tasks.</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[200px]">Name</TableHead>
+                  <TableHead className="w-[300px]">Description</TableHead>
+                  <TableHead className="w-[150px]">Status</TableHead>
+                  <TableHead className="w-[50px]">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {tasks.filter(task => task.state === state).map((task, index) => {
+                  return (
+                    <TaskRow key={index} task={task} rowIndex={index} editingCell={editingCell} editValue={editValue} setEditValue={setEditValue} cancelEditing={cancelEditing} saveEdit={saveEdit} startEditing={startEditing} themes={themes} currentTheme={currentTheme} deleteTask={deleteTask} />
+                  )
+                })}
+              </TableBody>
+            </Table>
+          </TabsContent>
+        ))}
+      </Tabs>
+      {/* <div className="flex justify-end mb-4">
         <Button
           onClick={() => {
             createTask();
@@ -134,7 +68,7 @@ export default function AllTasks() {
         >
           Add Task
         </Button>
-      </div>
+      </div> */}
     </div>
   )
 }
