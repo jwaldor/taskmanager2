@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Task } from "@/app/tasks"
 import { Check, X, Edit2 } from "lucide-react"
 import { Theme } from "../tasks"
+import { TableCell } from "@/components/ui/table"
+import { TableRow } from "@/components/ui/table"
 
 export function RenderCell({ task, rowIndex, column, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme }: { task: Task, rowIndex: number, column: keyof Task, editingCell: { index: number | null, column: keyof Task | null }, editValue: string, setEditValue: (value: string) => void, cancelEditing: () => void, saveEdit: (rowIndex: number, value: { [key: string]: string }) => void, startEditing: (rowIndex: number, column: keyof Task, value: string) => void, themes: Theme[], currentTheme: string }) {
 
@@ -81,5 +83,25 @@ export function RenderCell({ task, rowIndex, column, editingCell, editValue, set
 
   return (
     <>{renderCell(task, rowIndex, column)}</>
+  )
+}
+
+export function TaskRow({ task, rowIndex, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme, deleteTask }: { task: Task, rowIndex: number, editingCell: { index: number | null, column: keyof Task | null }, editValue: string, setEditValue: (value: string) => void, cancelEditing: () => void, saveEdit: (rowIndex: number, value: { [key: string]: string }) => void, startEditing: (rowIndex: number, column: keyof Task, value: string) => void, themes: Theme[], currentTheme: string, deleteTask: (rowIndex: number) => void }) {
+  const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
+  return (<TableRow key={rowIndex} style={{ backgroundColor: taskTheme.background }}>
+    <TableCell className="font-medium">{RenderCell({ task, rowIndex: rowIndex, column: "title", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
+    <TableCell>{RenderCell({ task, rowIndex: rowIndex, column: "description", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
+    <TableCell>{RenderCell({ task, rowIndex: rowIndex, column: "state", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
+    <TableCell>
+      <Button
+        size="icon"
+        variant="outline"
+        onClick={() => deleteTask(rowIndex)}
+        aria-label="Delete task"
+      >
+        <X className="h-4 w-4" style={{ color: taskTheme.accent }} />
+      </Button>
+    </TableCell>
+  </TableRow>
   )
 }

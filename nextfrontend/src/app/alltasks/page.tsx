@@ -4,14 +4,12 @@ import {
   Table,
   TableBody,
   TableCaption,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { X } from "lucide-react"
-import { RenderCell } from "../components/renderCell"
+import { TaskRow } from "../components/renderCell"
 import useTaskStore from '../tasks' // Adjust the import path based on your project structure
 
 export default function AllTasks() {
@@ -32,23 +30,24 @@ export default function AllTasks() {
         </TableHeader>
         <TableBody>
           {tasks.map((task, index) => {
-            const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
+            // const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
             return (
-              <TableRow key={index} style={{ backgroundColor: taskTheme.background }}>
-                <TableCell className="font-medium">{RenderCell({ task, rowIndex: index, column: "title", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
-                <TableCell>{RenderCell({ task, rowIndex: index, column: "description", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
-                <TableCell>{RenderCell({ task, rowIndex: index, column: "state", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
-                <TableCell>
-                  <Button
-                    size="icon"
-                    variant="outline"
-                    onClick={() => deleteTask(index)}
-                    aria-label="Delete task"
-                  >
-                    <X className="h-4 w-4" style={{ color: taskTheme.accent }} />
-                  </Button>
-                </TableCell>
-              </TableRow>
+              <TaskRow key={index} task={task} rowIndex={index} editingCell={editingCell} editValue={editValue} setEditValue={setEditValue} cancelEditing={cancelEditing} saveEdit={saveEdit} startEditing={startEditing} themes={themes} currentTheme={currentTheme} deleteTask={deleteTask} />
+              // <TableRow key={index} style={{ backgroundColor: taskTheme.background }}>
+              //   <TableCell className="font-medium">{RenderCell({ task, rowIndex: index, column: "title", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
+              //   <TableCell>{RenderCell({ task, rowIndex: index, column: "description", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
+              //   <TableCell>{RenderCell({ task, rowIndex: index, column: "state", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
+              //   <TableCell>
+              //     <Button
+              //       size="icon"
+              //       variant="outline"
+              //       onClick={() => deleteTask(index)}
+              //       aria-label="Delete task"
+              //     >
+              //       <X className="h-4 w-4" style={{ color: taskTheme.accent }} />
+              //     </Button>
+              //   </TableCell>
+              // </TableRow>
             )
           })}
         </TableBody>
