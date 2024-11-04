@@ -37,37 +37,61 @@ export default function Theme() {
               className="border rounded p-2 w-full"
             />
           </div>
-          {
-            Object.entries(editingTheme).map(([key, value]) => (
+          <div className="grid grid-cols-3 justify-items-center">
+            {Object.entries(editingTheme).map(([key, value]) => (
               key !== "name" && key !== "secondary" && key !== "id" && (
-                <div key={key} className="relative">
-                  <div
-                    className="flex items-center gap-4 p-3 border rounded cursor-pointer hover:bg-gray-200 transition"
-                    onClick={() => setShowPicker(showPicker === key ? null : key)}
-                  >
-                    <div
-                      className="w-8 h-8 rounded border"
-                      style={{ backgroundColor: value }}
-                    />
-                    <span className="capitalize">{key}: {value}</span>
-                  </div>
+                <div key={key} className="h-24 flex justify-center">
+                  <div className="flex-grow h-20 w-20" style={{ backgroundColor: value, border: '1px solid #e5e7eb', borderRadius: '0.375rem', display: 'flex', flexDirection: 'column' }}>
+                    <div className="relative flex-grow">
+                      <div className="capitalize text-xs bg-white p-2 rounded justify-center flex border-b-2 border-gradient-to-r from-blue-500 to-green-500">{key}</div>
+                      <div
+                        className="flex items-center gap-2 p-2 rounded cursor-pointer transition h-full"
+                        onClick={() => setShowPicker(showPicker === key ? null : key)}
+                      >
 
-                  {showPicker === key && (
-                    <div className="absolute z-10 mt-2">
-                      <ChromePicker
-                        color={value}
-                        onChange={(color) => editTheme({ [key]: color.hex })}
-                      />
+                      </div>
+
+                      {showPicker === key && (
+                        <div className="absolute z-10">
+                          <ChromePicker
+                            color={value}
+                            onChange={(color) => editTheme({ [key]: color.hex })}
+                          />
+                        </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               )
-            ))
-          }
-          {
+            ))}
+            {Object.entries(editingTheme["secondary"]).map(([key, value]) => (
+              <div key={key} className="h-24 flex justify-center">
+                <div className="flex-grow h-20 w-20" style={{ backgroundColor: value, border: '1px solid #e5e7eb', borderRadius: '0.375rem', display: 'flex', flexDirection: 'column' }}>
+                  <div className="relative flex-grow">
+                    <div className="capitalize text-xs bg-white p-2 rounded justify-center flex border-b-2 border-gradient-to-r from-blue-500 to-green-500">{key}</div>
+                    <div
+                      className="flex items-center gap-2 p-2 rounded cursor-pointer transition h-full"
+                      onClick={() => setShowPicker(showPicker === key ? null : key)}
+                    >
+                    </div>
+
+                    {showPicker === key && (
+                      <div className="absolute z-10">
+                        <ChromePicker
+                          color={value}
+                          onChange={(color) => editThemeSecondary(key as keyof Theme["secondary"], color.hex)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* {
             Object.entries(editingTheme["secondary"]).map(([key, value]) => (
               <div key={key} className="relative">
-                <div className="flex items-center gap-4 p-3 border rounded cursor-pointer hover:bg-gray-200 transition" onClick={() => setShowPicker(showPicker === key ? null : key)}>
+                <div className="flex items-center gap-4 p-3 border rounded cursor-pointer  transition" onClick={() => setShowPicker(showPicker === key ? null : key)}>
                   <div className="w-8 h-8 rounded border" style={{ backgroundColor: value }} />
                   <span className="capitalize">{key}: {value}</span>
                 </div>
@@ -81,7 +105,7 @@ export default function Theme() {
                 )}
               </div>
             ))
-          }
+          } */}
         </div>
       )}
       <div className="flex justify-center mt-4">
