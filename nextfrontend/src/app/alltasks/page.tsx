@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import { TaskRow } from "../components/renderCell"
+import { TaskRow } from "../components/Task"
 import useTaskStore from '../tasks' // Adjust the import path based on your project structure
 
 export default function AllTasks() {
