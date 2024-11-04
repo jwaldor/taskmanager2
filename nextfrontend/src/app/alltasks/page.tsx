@@ -16,14 +16,14 @@ import { Check, X, Edit2 } from "lucide-react"
 import useTaskStore from '../tasks' // Adjust the import path based on your project structure
 
 export default function AllTasks() {
-  const { themes, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing } = useTaskStore()
+  const { themes, currentTheme, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing } = useTaskStore()
 
   const renderCell = (task: Task, rowIndex: number, column: keyof Task) => {
     const isEditing = editingCell.index === rowIndex && editingCell.column === column
     const value = task[column]
 
     // Find the theme object for this task
-    const taskTheme = themes.find(t => t.name === task.theme) || themes[0]
+    const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
 
     // Define the text color based on the column
     const getTextColor = () => {
@@ -99,18 +99,16 @@ export default function AllTasks() {
             <TableHead className="w-[200px]">Name</TableHead>
             <TableHead className="w-[300px]">Description</TableHead>
             <TableHead className="w-[150px]">Status</TableHead>
-            <TableHead className="w-[150px]">Theme</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {tasks.map((task, index) => {
-            const taskTheme = themes.find(t => t.name === task.theme) || themes[0]
+            const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
             return (
               <TableRow key={index} style={{ backgroundColor: taskTheme.background }}>
                 <TableCell className="font-medium">{renderCell(task, index, "title")}</TableCell>
                 <TableCell>{renderCell(task, index, "description")}</TableCell>
                 <TableCell>{renderCell(task, index, "state")}</TableCell>
-                <TableCell>{renderCell(task, index, "theme")}</TableCell>
               </TableRow>
             )
           })}

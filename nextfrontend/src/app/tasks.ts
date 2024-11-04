@@ -19,6 +19,9 @@ export interface Task {
 interface TaskStore {
   tasks: Task[];
   themes: Theme[];
+  currentTheme: Theme["name"];
+  editingTheme: Theme;
+  //   setEditingTheme: (theme: Theme) => v;
   createTask: () => void;
   //   editTask: (index: number, updatedTask: Partial<Task>) => void;
   editingCell: { index: number | null; column: keyof Task | null };
@@ -32,6 +35,19 @@ interface TaskStore {
 
 const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
+  currentTheme: "light",
+  editingTheme: {
+    name: "light",
+    background: "#ffffff",
+    text: "#000000",
+    primary: "#000000",
+    secondary: {
+      pending: "#ffcc00",
+      inProgress: "#007bff",
+      completed: "#28a745",
+    },
+    accent: "#000000",
+  },
   themes: [
     {
       name: "light",
@@ -64,7 +80,7 @@ const useTaskStore = create<TaskStore>((set) => ({
         title: "",
         description: "",
         state: "pending",
-        theme: "default",
+        theme: state.themes[0].name,
       };
       return { tasks: [...state.tasks, newTask] };
     }),
@@ -77,23 +93,33 @@ const useTaskStore = create<TaskStore>((set) => ({
   editingCell: { index: null, column: null },
   editValue: "",
   setEditing: (index: number, column: keyof Task) =>
-    set(() => ({ editingCell: { index, column } })),
-  setEditValue: (value: string) => set(() => ({ editValue: value })),
+    set(() => ({
+      editingCell: { index, column },
+    })),
+  setEditValue: (value: string) =>
+    set((state) => ({ ...state, editValue: value })),
   // New functions added
   cancelEditing: () =>
-    set(() => ({ editingCell: { index: null, column: null }, editValue: "" })),
+    set(() => ({
+      editingCell: { index: null, column: null },
+      editValue: "",
+    })),
   saveEdit: (taskIndex: number, updatedTask: Partial<Task>) =>
     set((state) => {
       const tasks = [...state.tasks];
       tasks[taskIndex] = { ...tasks[taskIndex], ...updatedTask };
       return {
+        ...state,
         tasks,
         editingCell: { index: null, column: null },
         editValue: "",
       };
     }),
   startEditing: (index: number, column: keyof Task, value: string) =>
-    set(() => ({ editingCell: { index, column }, editValue: value })),
+    set(() => ({
+      editingCell: { index, column },
+      editValue: value,
+    })),
 }));
 
 export default useTaskStore;
