@@ -1,21 +1,11 @@
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Task } from "@/app/tasks"
 import { Check, X, Edit2 } from "lucide-react"
-import useTaskStore from '../tasks' // Adjust the import path based on your project structure
+import { Theme } from "../tasks"
 
-export function RenderCell({ task, rowIndex, column }: { task: Task, rowIndex: number, column: keyof Task }) {
-  const { themes, currentTheme, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, deleteTask, createTask } = useTaskStore()
+export function RenderCell({ task, rowIndex, column, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme }: { task: Task, rowIndex: number, column: keyof Task, editingCell: { index: number | null, column: keyof Task | null }, editValue: string, setEditValue: (value: string) => void, cancelEditing: () => void, saveEdit: (rowIndex: number, value: { [key: string]: string }) => void, startEditing: (rowIndex: number, column: keyof Task, value: string) => void, themes: Theme[], currentTheme: string }) {
 
   const renderCell = (task: Task, rowIndex: number, column: keyof Task) => {
     const isEditing = editingCell.index === rowIndex && editingCell.column === column
