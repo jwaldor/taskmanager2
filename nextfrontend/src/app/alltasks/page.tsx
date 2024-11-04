@@ -16,7 +16,7 @@ import { Check, X, Edit2 } from "lucide-react"
 import useTaskStore from '../tasks' // Adjust the import path based on your project structure
 
 export default function AllTasks() {
-  const { themes, currentTheme, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing } = useTaskStore()
+  const { themes, currentTheme, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, deleteTask, createTask } = useTaskStore()
 
   const renderCell = (task: Task, rowIndex: number, column: keyof Task) => {
     const isEditing = editingCell.index === rowIndex && editingCell.column === column
@@ -99,6 +99,7 @@ export default function AllTasks() {
             <TableHead className="w-[200px]">Name</TableHead>
             <TableHead className="w-[300px]">Description</TableHead>
             <TableHead className="w-[150px]">Status</TableHead>
+            <TableHead className="w-[50px]">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -109,6 +110,16 @@ export default function AllTasks() {
                 <TableCell className="font-medium">{renderCell(task, index, "title")}</TableCell>
                 <TableCell>{renderCell(task, index, "description")}</TableCell>
                 <TableCell>{renderCell(task, index, "state")}</TableCell>
+                <TableCell>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    onClick={() => deleteTask(index)}
+                    aria-label="Delete task"
+                  >
+                    <X className="h-4 w-4" style={{ color: taskTheme.accent }} />
+                  </Button>
+                </TableCell>
               </TableRow>
             )
           })}
@@ -117,14 +128,13 @@ export default function AllTasks() {
       <div className="flex justify-end mb-4">
         <Button
           onClick={() => {
-            useTaskStore.getState().createTask();
+            createTask();
           }}
           className="bg-blue-500 text-white"
         >
           Add Task
         </Button>
       </div>
-
     </div>
   )
 }

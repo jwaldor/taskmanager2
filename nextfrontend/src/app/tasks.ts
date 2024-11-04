@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface Theme {
+export interface Theme {
   name: string;
   background: string;
   text: string;
@@ -19,6 +19,8 @@ export interface Task {
 interface TaskStore {
   tasks: Task[];
   themes: Theme[];
+  createTheme: () => void;
+  editTheme: (updatedTheme: Partial<Theme>) => void;
   currentTheme: Theme["name"];
   editingTheme: Theme;
   //   setEditingTheme: (theme: Theme) => v;
@@ -31,6 +33,7 @@ interface TaskStore {
   cancelEditing: () => void;
   saveEdit: (taskIndex: number, updatedTask: Partial<Task>) => void;
   startEditing: (index: number, column: keyof Task, value: string) => void;
+  deleteTask: (index: number) => void;
 }
 
 const useTaskStore = create<TaskStore>((set) => ({
@@ -47,6 +50,17 @@ const useTaskStore = create<TaskStore>((set) => ({
       completed: "#28a745",
     },
     accent: "#000000",
+  },
+  createTheme: () => {
+    set((state) => ({
+      themes: [...state.themes, state.editingTheme],
+    }));
+  },
+  editTheme: (updatedTheme: Partial<Theme>) => {
+    set((state) => {
+      const editingTheme = { ...state.editingTheme, ...updatedTheme };
+      return { editingTheme };
+    });
   },
   themes: [
     {
@@ -120,6 +134,12 @@ const useTaskStore = create<TaskStore>((set) => ({
       editingCell: { index, column },
       editValue: value,
     })),
+  deleteTask: (index: number) =>
+    set((state) => {
+      const tasks = [...state.tasks];
+      tasks.splice(index, 1);
+      return { tasks };
+    }),
 }));
 
 export default useTaskStore;
