@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export enum TaskState {
   Pending = "Pending",
@@ -43,127 +44,136 @@ interface TaskStore {
   setCurrentTheme: (theme: Theme["name"]) => void;
 }
 
-const useTaskStore = create<TaskStore>((set) => ({
-  tasks: [],
-  setStore: (store: TaskStore) => set(() => ({ ...store })),
-  currentTheme: "light",
-  setCurrentTheme: (theme: Theme["name"]) =>
-    set(() => ({ currentTheme: theme })),
-  editingTheme: {
-    name: "light",
-    background: "#ffffff",
-    text: "#000000",
-    primary: "#000000",
-    secondary: {
-      Pending: "#ffcc00",
-      "In Progress": "#007bff",
-      Completed: "#28a745",
-    },
-    accent: "#000000",
-  },
-  createTheme: () => {
-    set((state) => {
-      if (
-        !state.themes.find((theme) => theme.name === state.editingTheme.name)
-      ) {
-        return { themes: [...state.themes, state.editingTheme] };
-      }
-      return { themes: state.themes };
-    });
-  },
-  editTheme: (updatedTheme: Partial<Theme>) => {
-    set((state) => {
-      const editingTheme = { ...state.editingTheme, ...updatedTheme };
-      return { editingTheme };
-    });
-  },
-  editThemeSecondary: (key: keyof Theme["secondary"], value: string) => {
-    set((state) => {
-      const editingTheme = {
-        ...state.editingTheme,
-        secondary: { ...state.editingTheme.secondary, [key]: value },
-      };
-      return { editingTheme };
-    });
-  },
-  themes: [
-    {
-      name: "light",
-      background: "#ffffff",
-      text: "#000000",
-      primary: "#000000",
-      secondary: {
-        Pending: "#ffcc00", // Yellow for pending
-        "In Progress": "#007bff", // Blue for in-progress
-        Completed: "#28a745", // Green for completed
+const useTaskStore = create(
+  persist<TaskStore>(
+    (set) => ({
+      tasks: [],
+      setStore: (store: TaskStore) => set(() => ({ ...store })),
+      currentTheme: "light",
+      setCurrentTheme: (theme: Theme["name"]) =>
+        set(() => ({ currentTheme: theme })),
+      editingTheme: {
+        name: "light",
+        background: "#ffffff",
+        text: "#000000",
+        primary: "#000000",
+        secondary: {
+          Pending: "#ffcc00",
+          "In Progress": "#007bff",
+          Completed: "#28a745",
+        },
+        accent: "#000000",
       },
-      accent: "#000000",
-    },
-    {
-      name: "dark",
-      background: "#000000",
-      text: "#ffffff",
-      primary: "#ffffff",
-      secondary: {
-        Pending: "#ffcc00", // Yellow for pending
-        "In Progress": "#007bff", // Blue for in-progress
-        Completed: "#28a745", // Green for completed
+      createTheme: () => {
+        set((state) => {
+          if (
+            !state.themes.find(
+              (theme) => theme.name === state.editingTheme.name
+            )
+          ) {
+            return { themes: [...state.themes, state.editingTheme] };
+          }
+          return { themes: state.themes };
+        });
       },
-      accent: "#ffffff",
-    },
-  ],
-  createTask: () =>
-    set((state) => {
-      const newTask: Task = {
-        title: "",
-        description: "",
-        state: TaskState.Pending,
-        theme: state.themes[0].name,
-      };
-      return { tasks: [...state.tasks, newTask] };
-    }),
-  //   editTask: (index, updatedTask) =>
-  //     set((state) => {
-  //       const tasks = [...state.tasks];
-  //       tasks[index] = { ...tasks[index], ...updatedTask };
-  //       return { tasks };
-  //     }),
-  editingCell: { index: null, column: null },
-  editValue: "",
-  setEditing: (index: number, column: keyof Task) =>
-    set(() => ({
-      editingCell: { index, column },
-    })),
-  setEditValue: (value: string) =>
-    set((state) => ({ ...state, editValue: value })),
-  // New functions added
-  cancelEditing: () =>
-    set(() => ({
+      editTheme: (updatedTheme: Partial<Theme>) => {
+        set((state) => {
+          const editingTheme = { ...state.editingTheme, ...updatedTheme };
+          return { editingTheme };
+        });
+      },
+      editThemeSecondary: (key: keyof Theme["secondary"], value: string) => {
+        set((state) => {
+          const editingTheme = {
+            ...state.editingTheme,
+            secondary: { ...state.editingTheme.secondary, [key]: value },
+          };
+          return { editingTheme };
+        });
+      },
+      themes: [
+        {
+          name: "light",
+          background: "#ffffff",
+          text: "#000000",
+          primary: "#000000",
+          secondary: {
+            Pending: "#ffcc00", // Yellow for pending
+            "In Progress": "#007bff", // Blue for in-progress
+            Completed: "#28a745", // Green for completed
+          },
+          accent: "#000000",
+        },
+        {
+          name: "dark",
+          background: "#000000",
+          text: "#ffffff",
+          primary: "#ffffff",
+          secondary: {
+            Pending: "#ffcc00", // Yellow for pending
+            "In Progress": "#007bff", // Blue for in-progress
+            Completed: "#28a745", // Green for completed
+          },
+          accent: "#ffffff",
+        },
+      ],
+      createTask: () =>
+        set((state) => {
+          const newTask: Task = {
+            title: "",
+            description: "",
+            state: TaskState.Pending,
+            theme: state.themes[0].name,
+          };
+          return { tasks: [...state.tasks, newTask] };
+        }),
+      //   editTask: (index, updatedTask) =>
+      //     set((state) => {
+      //       const tasks = [...state.tasks];
+      //       tasks[index] = { ...tasks[index], ...updatedTask };
+      //       return { tasks };
+      //     }),
       editingCell: { index: null, column: null },
       editValue: "",
-    })),
-  saveEdit: (taskIndex: number, updatedTask: Partial<Task>) =>
-    set((state) => {
-      const tasks = [...state.tasks];
-      tasks[taskIndex] = { ...tasks[taskIndex], ...updatedTask };
-      return {
-        ...state,
-        tasks,
-        editingCell: { index: null, column: null },
-        editValue: "",
-      };
+      setEditing: (index: number, column: keyof Task) =>
+        set(() => ({
+          editingCell: { index, column },
+        })),
+      setEditValue: (value: string) =>
+        set((state) => ({ ...state, editValue: value })),
+      // New functions added
+      cancelEditing: () =>
+        set(() => ({
+          editingCell: { index: null, column: null },
+          editValue: "",
+        })),
+      saveEdit: (taskIndex: number, updatedTask: Partial<Task>) =>
+        set((state) => {
+          const tasks = [...state.tasks];
+          tasks[taskIndex] = { ...tasks[taskIndex], ...updatedTask };
+          return {
+            ...state,
+            tasks,
+            editingCell: { index: null, column: null },
+            editValue: "",
+          };
+        }),
+      startEditing: (index: number, column: keyof Task, value: string) =>
+        set(() => ({
+          editingCell: { index, column },
+          editValue: value,
+        })),
+      deleteTask: (index: number) =>
+        set((state) => {
+          const tasks = [...state.tasks];
+          tasks.splice(index, 1);
+          return { tasks };
+        }),
     }),
-  startEditing: (index: number, column: keyof Task, value: string) =>
-    set(() => ({
-      editingCell: { index, column },
-      editValue: value,
-    })),
-  deleteTask: (index: number) =>
-    set((state) => {
-      const tasks = [...state.tasks];
-      tasks.splice(index, 1);
-      return { tasks };
-    }),
-}));
+    {
+      name: "task-store",
+    }
+  )
+);
 
 export default useTaskStore;
