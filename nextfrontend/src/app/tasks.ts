@@ -19,7 +19,6 @@ export interface Task {
   title: string;
   description: string;
   state: TaskState;
-  theme: string;
 }
 
 interface TaskStore {
@@ -31,6 +30,13 @@ interface TaskStore {
   editingTheme: Theme;
   //   setEditingTheme: (theme: Theme) => v;
   createTask: () => void;
+  createProvidedTasks: (
+    tasks: {
+      title: string;
+      description: string;
+      state: TaskState;
+    }[]
+  ) => void;
   //   editTask: (index: number, updatedTask: Partial<Task>) => void;
   editingCell: { index: number | null; column: keyof Task | null };
   editValue: string;
@@ -48,6 +54,19 @@ const useTaskStore = create(
   persist<TaskStore>(
     (set) => ({
       tasks: [],
+      createProvidedTasks: (
+        tasks: {
+          title: string;
+          description: string;
+          state: TaskState;
+        }[]
+      ) =>
+        set((state) => {
+          const newTasks = structuredClone(state.tasks);
+          newTasks.push(...tasks);
+          console.log("newTasks", newTasks);
+          return { tasks: newTasks };
+        }),
       setStore: (store: TaskStore) => set(() => ({ ...store })),
       currentTheme: "light",
       setCurrentTheme: (theme: Theme["name"]) =>
@@ -123,7 +142,6 @@ const useTaskStore = create(
             title: "",
             description: "",
             state: TaskState.Pending,
-            theme: state.themes[0].name,
           };
           return { tasks: [...state.tasks, newTask] };
         }),

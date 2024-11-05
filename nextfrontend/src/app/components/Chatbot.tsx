@@ -1,10 +1,8 @@
 "use client";
-import { useState } from 'react';
-import { useChatStore } from '../chatServices/state'; // Adjust the import path as necessary
+import { getResponse, useChatStore } from '../chatServices/state'; // Adjust the import path as necessary
 
 export default function Chatbot() {
-    const [inputValue, setInputValue] = useState('');
-    const { messages, addMessage } = useChatStore();
+    const { messages, inputValue, setInputValue } = useChatStore();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -14,10 +12,11 @@ export default function Chatbot() {
         // Logic to send the message
         console.log(inputValue);
         setInputValue(''); // Clear input after sending
+        getResponse(inputValue);
     };
 
     return (
-        <nav>
+        <nav className="w-48">
             <div>
                 <div className="">
                     {messages.map((message, index) => (
