@@ -1,18 +1,23 @@
 import { create } from "zustand";
 
+export enum TaskState {
+  Pending = "Pending",
+  InProgress = "In Progress",
+  Completed = "Completed",
+}
 export interface Theme {
   name: string;
   background: string;
   text: string;
   primary: string;
-  secondary: { pending: string; inProgress: string; completed: string };
+  secondary: { [key in TaskState]: string };
   accent: string;
 }
 
 export interface Task {
   title: string;
   description: string;
-  state: "pending" | "in-progress" | "completed";
+  state: TaskState;
   theme: string;
 }
 
@@ -40,6 +45,7 @@ interface TaskStore {
 
 const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
+  setStore: (store: TaskStore) => set(() => ({ ...store })),
   currentTheme: "light",
   setCurrentTheme: (theme: Theme["name"]) =>
     set(() => ({ currentTheme: theme })),
@@ -49,9 +55,9 @@ const useTaskStore = create<TaskStore>((set) => ({
     text: "#000000",
     primary: "#000000",
     secondary: {
-      pending: "#ffcc00",
-      inProgress: "#007bff",
-      completed: "#28a745",
+      Pending: "#ffcc00",
+      "In Progress": "#007bff",
+      Completed: "#28a745",
     },
     accent: "#000000",
   },
@@ -87,9 +93,9 @@ const useTaskStore = create<TaskStore>((set) => ({
       text: "#000000",
       primary: "#000000",
       secondary: {
-        pending: "#ffcc00", // Yellow for pending
-        inProgress: "#007bff", // Blue for in-progress
-        completed: "#28a745", // Green for completed
+        Pending: "#ffcc00", // Yellow for pending
+        "In Progress": "#007bff", // Blue for in-progress
+        Completed: "#28a745", // Green for completed
       },
       accent: "#000000",
     },
@@ -99,9 +105,9 @@ const useTaskStore = create<TaskStore>((set) => ({
       text: "#ffffff",
       primary: "#ffffff",
       secondary: {
-        pending: "#ffcc00", // Yellow for pending
-        inProgress: "#007bff", // Blue for in-progress
-        completed: "#28a745", // Green for completed
+        Pending: "#ffcc00", // Yellow for pending
+        "In Progress": "#007bff", // Blue for in-progress
+        Completed: "#28a745", // Green for completed
       },
       accent: "#ffffff",
     },
@@ -111,7 +117,7 @@ const useTaskStore = create<TaskStore>((set) => ({
       const newTask: Task = {
         title: "",
         description: "",
-        state: "pending",
+        state: TaskState.Pending,
         theme: state.themes[0].name,
       };
       return { tasks: [...state.tasks, newTask] };
