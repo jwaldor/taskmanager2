@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Chatbot from "./components/Chatbot";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navigation from "./components/Navigation";
@@ -25,21 +26,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {/* <nav className="bg-gray-800 p-4">
-          <div className="container mx-auto flex justify-between items-center">
-            <div className="text-white font-bold">Your Logo</div>
-            <div className="space-x-4">
-              <a href="/" className="text-white hover:text-gray-300">Home</a>
-              <a href="/alltasks" className="text-white hover:text-gray-300">Tab View</a>
-              <a href="/theme" className="text-white hover:text-gray-300">Set Theme</a>
-            </div>
-          </div>
-        </nav> */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Navigation />
-        {children}
+        <main className="flex flex-row w-full">
+          {children}
+          <Chatbot />
+        </main>
+        {/* <main className="flex flex-row w-full"> */}
+        {/* Add your sidebar here, for example: */}
+        {/* <aside className="w-1/4 bg-gray-100">Sidebar content</aside> */}
+        {/* </main> */}
       </body>
     </html>
   );

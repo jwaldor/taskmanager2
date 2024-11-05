@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 type SpeakerType = "user" | "assistant";
 type MessageType = { role: SpeakerType; content: string };
-type MessagesType = MessageType[];
+export type MessagesType = MessageType[];
 
 type ChatStore = {
   messages: MessagesType;
