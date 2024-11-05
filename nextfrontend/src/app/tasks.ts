@@ -1,9 +1,9 @@
 import { create } from "zustand";
 
 export enum TaskState {
-  Pending = "pending",
-  InProgress = "inProgress",
-  Completed = "completed",
+  Pending = "Pending",
+  InProgress = "In Progress",
+  Completed = "Completed",
 }
 export interface Theme {
   name: string;
@@ -54,9 +54,9 @@ const useTaskStore = create<TaskStore>((set) => ({
     text: "#000000",
     primary: "#000000",
     secondary: {
-      pending: "#ffcc00",
-      inProgress: "#007bff",
-      completed: "#28a745",
+      Pending: "#ffcc00",
+      "In Progress": "#007bff",
+      Completed: "#28a745",
     },
     accent: "#000000",
   },
@@ -92,9 +92,9 @@ const useTaskStore = create<TaskStore>((set) => ({
       text: "#000000",
       primary: "#000000",
       secondary: {
-        pending: "#ffcc00", // Yellow for pending
-        inProgress: "#007bff", // Blue for in-progress
-        completed: "#28a745", // Green for completed
+        Pending: "#ffcc00", // Yellow for pending
+        "In Progress": "#007bff", // Blue for in-progress
+        Completed: "#28a745", // Green for completed
       },
       accent: "#000000",
     },
@@ -104,9 +104,9 @@ const useTaskStore = create<TaskStore>((set) => ({
       text: "#ffffff",
       primary: "#ffffff",
       secondary: {
-        pending: "#ffcc00", // Yellow for pending
-        inProgress: "#007bff", // Blue for in-progress
-        completed: "#28a745", // Green for completed
+        Pending: "#ffcc00", // Yellow for pending
+        "In Progress": "#007bff", // Blue for in-progress
+        Completed: "#28a745", // Green for completed
       },
       accent: "#ffffff",
     },
