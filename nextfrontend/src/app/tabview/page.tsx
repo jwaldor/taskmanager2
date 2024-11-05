@@ -26,10 +26,10 @@ export default function AllTasks() {
             const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
             return (
               <TabsTrigger
-                className=""
+                className="border"
                 key={state}
                 value={state}
-                style={{ backgroundColor: taskTheme.secondary[state], color: taskTheme.text }}
+                style={{ color: taskTheme.secondary[state] }}
               >
                 {state.charAt(0).toUpperCase() + state.slice(1)}
               </TabsTrigger>
