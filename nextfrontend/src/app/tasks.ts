@@ -45,6 +45,7 @@ interface TaskStore {
 
 const useTaskStore = create<TaskStore>((set) => ({
   tasks: [],
+  setStore: (store: TaskStore) => set(() => ({ ...store })),
   currentTheme: "light",
   setCurrentTheme: (theme: Theme["name"]) =>
     set(() => ({ currentTheme: theme })),

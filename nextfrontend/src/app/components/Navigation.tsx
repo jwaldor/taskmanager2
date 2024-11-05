@@ -1,10 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+// import { useLoadState, useSaveState } from "../LoadState";
 
 export default function Navigation() {
     const pathname = usePathname();
-
+    // useLoadState();
+    // useSaveState();
     return (
         <nav className="bg-gray-800 p-4">
             <div className="container mx-auto flex justify-between items-center">

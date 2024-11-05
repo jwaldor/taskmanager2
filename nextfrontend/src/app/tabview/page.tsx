@@ -21,7 +21,7 @@ export default function AllTasks() {
   return (
     <div className="w-full h-full overflow-auto">
       <Tabs defaultValue={taskStates[0]} className="mb-4">
-        <TabsList className="flex flex-row justify-between bg-gray-800">
+        <TabsList className="flex flex-row justify-start gap-4 bg-gray-800">
           {taskStates.map((state) => {
             const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
             return (
