@@ -60,8 +60,8 @@ export default function Chatbot() {
                             <strong>{message.role}:</strong> {message.content}
                         </div>
                     ))}
+                    <TaskCreationBox tasks={proposedTasks} />
                 </div>
-                <TaskCreationBox tasks={proposedTasks} />
                 <div className="flex">
                     <input
                         type="text"
@@ -72,7 +72,7 @@ export default function Chatbot() {
                                 handleSendMessage();
                             }
                         }}
-                        placeholder={proposedTasks.length === 0 ? "Type your message..." : "Propose changes..."}
+                        placeholder={proposedTasks.length === 0 ? "Type your message..." : "Are you ready to act on these tasks now? If not, propose changes..."}
                         className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>

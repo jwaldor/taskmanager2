@@ -84,6 +84,7 @@ export async function createProposedTasks() {
   const { createProvidedTasks } = useTaskStore.getState();
   const { proposedTasks } = useChatStore.getState();
   createProvidedTasks(proposedTasks);
+  useChatStore.getState().setProposedTasks([]);
 }
 
 export async function rejectProposedTasks() {
