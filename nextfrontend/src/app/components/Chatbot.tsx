@@ -16,7 +16,7 @@ export default function Chatbot() {
     };
 
     return (
-        <nav className="w-48 p-4 bg-gray-100 rounded-lg shadow-md">
+        <nav className="w-full md:max-w-xs p-4 bg-gray-100 rounded-lg shadow-md max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-screen max-md:max-h-1/3">
             <div className="flex flex-col space-y-4">
                 <div className="overflow-y-auto max-h-60">
                     {messages.map((message, index) => (

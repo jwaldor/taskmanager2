@@ -28,9 +28,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Navigation />
-        <main className="flex flex-row w-full">
-          {children}
+        <main className="flex flex-row  w-full">
+          <div className="w-full">
+            {children}
+          </div>
           <Chatbot />
+
         </main>
         {/* <main className="flex flex-row w-full"> */}
         {/* Add your sidebar here, for example: */}
