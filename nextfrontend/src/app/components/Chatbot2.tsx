@@ -62,7 +62,7 @@ export default function Chatbot() {
                         onChange={handleInputChange}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                handleSendMessage(inputValue);
+                                handleSendMessage();
                             }
                         }}
                         placeholder={proposedTasks.length === 0 ? "Type your message..." : "Are you ready to act on these tasks now? If not, propose changes..."}
@@ -76,7 +76,7 @@ export default function Chatbot() {
                         Send
                     </button>
                     <button onClick={handleSuggestTasks} className="p-2 bg-green-500 text-white rounded-lg hover:bg-blue-600" title="Suggest tasks based on conversation">
-                        Suggest
+                        {proposedTasks.length > 0 ? "Modify" : "Suggest"}
                     </button>
                     <button onClick={createProposedTasks} className="p-2 bg-purple-800 text-white rounded-lg hover:bg-blue-600" title="Create proposed tasks">
                         Create
