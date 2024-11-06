@@ -9,6 +9,7 @@ export type MessagesType = MessageType[];
 type ChatStore = {
   messages: MessagesType;
   addMessage: (message: MessageType) => void;
+  setMessages: (messages: MessagesType) => void;
   inputValue: string;
   setInputValue: (value: string) => void;
   proposedTasks: Task[];
@@ -20,6 +21,8 @@ export const useChatStore = create<ChatStore>((set) => ({
   messages: [],
   addMessage: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
+  setMessages: (messages: MessagesType) =>
+    set({ messages: structuredClone(messages) }),
   inputValue: "",
   setInputValue: (value) => set({ inputValue: value }),
   proposedTasks: [],
@@ -61,22 +64,22 @@ export const useChatStore = create<ChatStore>((set) => ({
 // }
 
 const BASIC_SYSTEM_PROMPT =
-  "You are a helpful assistant who helps the user strategize what to do in a compassionate, empathetic, and creative way. You help the user think of things that they would not have without you.";
+  "You are a helpful assistant who helps the user strategize what to do in a compassionate, empathetic, and creative way. You help the user think of things that they would not have without you. Respond in <4 sentences/<4 bullet points.";
 
-export async function getResponse(inputValue: string) {
-  useChatStore.getState().addMessage({
+export async function handleSendMessage() {
+  const inputValue = useChatStore.getState().inputValue;
+  const messages = useChatStore.getState().messages;
+  messages.push({
     role: "user",
     content: inputValue,
   });
-  const allMessages = useChatStore.getState().messages;
-  const response = await getChatResponseCustom(
-    allMessages,
-    BASIC_SYSTEM_PROMPT
-  );
-  useChatStore.getState().addMessage({
+  useChatStore.getState().setInputValue(""); // Clear input after sending
+  const response = await getChatResponseCustom(messages, BASIC_SYSTEM_PROMPT);
+  messages.push({
     role: "assistant",
     content: response ?? "",
   });
+  useChatStore.getState().setMessages(messages);
   return response;
 }
 
@@ -92,8 +95,22 @@ export async function rejectProposedTasks() {
 }
 
 export async function handleSuggestTasks() {
+  const inputValue = useChatStore.getState().inputValue;
+  useChatStore.getState().setInputValue(""); // Clear input after sending
   const allMessages = useChatStore.getState().messages;
-  const response = await suggestTasks(allMessages);
+  useChatStore.getState().addMessage({
+    role: "user",
+    content: "[Requesting task suggestions]: " + inputValue,
+  });
+  const response = await suggestTasks(
+    allMessages.concat([{ role: "user", content: inputValue }])
+  );
   console.log("response", response);
+  useChatStore.getState().addMessage({
+    role: "assistant",
+    content:
+      "[Task suggester]: " +
+      response.tasks.map((task) => JSON.stringify(task)).join(", "),
+  });
   useChatStore.getState().setProposedTasks(response.tasks);
 }

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef } from 'react';
-import { getResponse, handleSuggestTasks, useChatStore, createProposedTasks, rejectProposedTasks } from '../chatServices/state'; // Adjust the import path as necessary
+import { handleSendMessage, handleSuggestTasks, useChatStore, createProposedTasks, rejectProposedTasks } from '../chatServices/state'; // Adjust the import path as necessary
 import { Task } from '../tasks';
 import { v4 as uuidv4 } from 'uuid';
 import {
@@ -38,13 +38,6 @@ export default function Chatbot() {
         setInputValue(e.target.value);
     };
 
-    const handleSendMessage = () => {
-        // Logic to send the message
-        console.log(inputValue);
-        setInputValue(''); // Clear input after sending
-        getResponse(inputValue);
-    };
-
     useEffect(() => {
         if (messagesEndRef.current) {
             messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
@@ -69,7 +62,7 @@ export default function Chatbot() {
                         onChange={handleInputChange}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                handleSendMessage();
+                                handleSendMessage(inputValue);
                             }
                         }}
                         placeholder={proposedTasks.length === 0 ? "Type your message..." : "Are you ready to act on these tasks now? If not, propose changes..."}
