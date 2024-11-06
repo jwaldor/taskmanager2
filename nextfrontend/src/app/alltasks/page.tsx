@@ -23,8 +23,9 @@ export default function AllTasks() {
         <TableHeader>
           <TableRow>
             <TableHead className="w-[200px]">Name</TableHead>
-            <TableHead className="w-[300px]">Description</TableHead>
+            <TableHead className="w-[200px]">Description</TableHead>
             <TableHead className="w-[150px]">Status</TableHead>
+            <TableHead className="w-[200px]">Epic</TableHead>
             <TableHead className="w-[50px]">Actions</TableHead>
           </TableRow>
         </TableHeader>

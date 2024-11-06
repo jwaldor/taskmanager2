@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { v4 as uuidv4 } from "uuid";
 
 export enum TaskState {
   Pending = "Pending",
@@ -19,10 +20,21 @@ export interface Task {
   title: string;
   description: string;
   state: TaskState;
+  epic?: string;
+}
+
+export interface Epics {
+  id: string;
+  title: string;
+  description: string;
 }
 
 interface TaskStore {
   tasks: Task[];
+  epics: Epics[];
+  createEpic: () => void;
+  saveEpic: (id: string, updatedEpic: Partial<Epics>) => void;
+  deleteEpic: (id: string) => void;
   themes: Theme[];
   createTheme: () => void;
   editTheme: (updatedTheme: Partial<Theme>) => void;
@@ -54,6 +66,29 @@ const useTaskStore = create(
   persist<TaskStore>(
     (set) => ({
       tasks: [],
+      epics: [],
+      createEpic: () => {
+        set((state) => {
+          const newEpic: Epics = { id: uuidv4(), title: "", description: "" };
+          return { epics: [...state.epics, newEpic] };
+        });
+      },
+      saveEpic: (id: string, updatedEpic: Partial<Epics>) => {
+        set((state) => {
+          const epics = [...state.epics];
+          const index = epics.findIndex((epic) => epic.id === id);
+          epics[index] = { ...epics[index], ...updatedEpic };
+          return { epics };
+        });
+      },
+      deleteEpic: (id: string) => {
+        set((state) => {
+          const epics = [...state.epics];
+          const index = epics.findIndex((epic) => epic.id === id);
+          epics.splice(index, 1);
+          return { epics };
+        });
+      },
       createProvidedTasks: (
         tasks: {
           title: string;
@@ -167,6 +202,7 @@ const useTaskStore = create(
         })),
       saveEdit: (taskIndex: number, updatedTask: Partial<Task>) =>
         set((state) => {
+          console.log("updatedTask", updatedTask);
           const tasks = [...state.tasks];
           tasks[taskIndex] = { ...tasks[taskIndex], ...updatedTask };
           return {
