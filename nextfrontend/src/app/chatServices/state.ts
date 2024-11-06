@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { getChatResponse } from "./llm";
-import { extractTasks } from "./llm";
+import { extractTasks, suggestTasks } from "./llm";
 import useTaskStore, { Task } from "../tasks";
 type SpeakerType = "user" | "assistant";
 type MessageType = { role: SpeakerType; content: string };
@@ -58,4 +58,11 @@ export async function getResponse(message: string) {
     useTaskStore.getState().createProvidedTasks(tasks.tasks);
   }
   return response;
+}
+
+export async function handleSuggestTasks() {
+  const allMessages = useChatStore.getState().messages;
+  const response = await suggestTasks(allMessages);
+  console.log("response", response);
+  useChatStore.getState().setProposedTasks(response.tasks);
 }

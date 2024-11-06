@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Chatbot from "./components/Chatbot";
+import Chatbot from "./components/Chatbot2";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navigation from "./components/Navigation";

@@ -1,22 +1,24 @@
 "use client";
 import { useEffect, useRef } from 'react';
-import { getResponse, useChatStore } from '../chatServices/state'; // Adjust the import path as necessary
+import { getResponse, handleSuggestTasks, useChatStore } from '../chatServices/state'; // Adjust the import path as necessary
 import { Task } from '../tasks';
-import { randomUUID } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 function TaskCreationBox({ tasks }: { tasks: Task[] }) {
     return <div>
-        <i>Suggested tasks:</i>
+        {tasks.length > 0 && <i>Suggested tasks:</i>}
         {tasks.map((task) => (
-            <input key={randomUUID()} type="text" value={task.title} />
+            <div key={uuidv4()} className="p-2 rounded-lg bg-gray-300 text-black mb-2">
+                {task.title}
+            </div>
         ))}
-        <i>Chat to propose changes.</i>
+        {tasks.length > 0 && <i>Chat to propose changes.</i>}
     </div>
 }
 
 
 export default function Chatbot() {
-    const { messages, inputValue, setInputValue } = useChatStore();
+    const { messages, inputValue, setInputValue, proposedTasks } = useChatStore();
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
@@ -54,10 +56,18 @@ export default function Chatbot() {
                         className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
-                <button onClick={handleSendMessage} className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
-                    Send
-                </button>
+                <div className="flex gap-2">
+
+                    <button onClick={handleSendMessage} className="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
+                        Send
+                    </button>
+                    <button onClick={handleSuggestTasks} className="p-2 bg-green-500 text-white rounded-lg hover:bg-blue-600">
+                        Suggest tasks
+                    </button>
+
+                </div>
             </div>
+            <TaskCreationBox tasks={proposedTasks} />
         </nav>
     );
 };
