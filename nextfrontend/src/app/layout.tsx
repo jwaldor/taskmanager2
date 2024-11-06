@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Chatbot from "./components/Chatbot";
+import Chatbot from "./components/Chatbot2";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navigation from "./components/Navigation";
@@ -26,11 +26,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}>
         <Navigation />
-        <main className="flex flex-row w-full">
-          {children}
+        <main className="flex flex-row  w-full">
+          <div className="w-full">
+            <div className="overflow-y-auto max-h-[calc(100vh)]">
+              {children}
+            </div>
+          </div>
+          {/* {children} */}
           <Chatbot />
+
         </main>
         {/* <main className="flex flex-row w-full"> */}
         {/* Add your sidebar here, for example: */}
