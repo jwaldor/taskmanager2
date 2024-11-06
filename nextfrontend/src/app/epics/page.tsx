@@ -19,7 +19,7 @@ export default function Epics() {
   const { editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme, deleteTask } = useTaskStore()
 
   const getTasksForEpic = (epicId: string) => {
-    return tasks.filter(task => task.epic?.id === epicId)
+    return tasks.filter(task => task.epic === epicId)
   }
   return (
     <div className="w-full h-full overflow-auto">

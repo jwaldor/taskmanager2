@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button"
-import useTaskStore, { TaskState } from "@/app/tasks"
+import useTaskStore from "@/app/tasks"
 import { Check, X, Edit2 } from "lucide-react"
 import { TableCell } from "@/components/ui/table"
 import { TableRow } from "@/components/ui/table"

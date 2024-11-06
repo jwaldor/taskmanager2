@@ -1,18 +1,21 @@
-
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Task, TaskState } from "@/app/tasks"
+import useTaskStore, { Task, TaskState } from "@/app/tasks"
 import { Check, X, Edit2 } from "lucide-react"
 import { Theme } from "../tasks"
 import { TableCell } from "@/components/ui/table"
 import { TableRow } from "@/components/ui/table"
 
 export function RenderCell({ task, rowIndex, column, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme }: { task: Task, rowIndex: number, column: keyof Task, editingCell: { index: number | null, column: keyof Task | null }, editValue: string, setEditValue: (value: string) => void, cancelEditing: () => void, saveEdit: (rowIndex: number, value: { [key: string]: string }) => void, startEditing: (rowIndex: number, column: keyof Task, value: string) => void, themes: Theme[], currentTheme: string }) {
+  const { epics } = useTaskStore()
 
   const renderCell = (task: Task, rowIndex: number, column: keyof Task) => {
     const isEditing = editingCell.index === rowIndex && editingCell.column === column
-    const value = column === "epic" ? (task.epic ? task.epic.title : "") : task[column]
-
+    const value = column === "epic" ? (task.epic ? epics.find(e => e.id === task.epic)?.title : "") : task[column]
+    // if (column === "epic") {
+    //   console.log("epicvalue", value)
+    //   console.log("task", task)
+    // }
     // Find the theme object for this task
     const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
 
@@ -31,28 +34,57 @@ export function RenderCell({ task, rowIndex, column, editingCell, editValue, set
     if (isEditing) {
       return (
         <div className="flex items-center space-x-2" style={{ backgroundColor: taskTheme.background }}>
-          {column === "state" ? (
-            <select
-              className="w-full"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              style={{ color: taskTheme.text, backgroundColor: taskTheme.background }}
-            >
-              {Object.values(TaskState).map((state, index) => (
-                <option key={index} value={state}>
-                  {state}
-                </option>
-              ))}
-            </select>
-          ) : (
-            <Input
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              className="w-full"
-              autoFocus
-              style={{ color: getTextColor(), backgroundColor: taskTheme.background }}
-            />
-          )}
+          {(() => {
+            switch (column) {
+              case "state":
+                return (
+                  <select
+                    className="w-full"
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    style={{ color: taskTheme.text, backgroundColor: taskTheme.background }}
+                  >
+                    {Object.values(TaskState).map((state, index) => (
+                      <option key={index} value={state}>
+                        {state}
+                      </option>
+                    ))}
+                  </select>
+                )
+              case "epic":
+                return (
+                  <select
+                    className="w-full"
+                    value={editValue}
+                    onFocus={() => {
+                      console.log("focus", epics[0]?.id)
+                      setEditValue(epics[0]?.id || "")
+                    }}
+                    onChange={(e) => {
+                      console.log("onchange", e.target.value)
+                      setEditValue(e.target.value)
+                    }}
+                    style={{ color: taskTheme.text, backgroundColor: taskTheme.background }}
+                  >
+                    {epics.map((epic, index) => (
+                      <option key={index} value={epic.id}>
+                        {epic.title}
+                      </option>
+                    ))}
+                  </select>
+                )
+              default:
+                return (
+                  <Input
+                    value={editValue}
+                    onChange={(e) => setEditValue(e.target.value)}
+                    className="w-full"
+                    autoFocus
+                    style={{ color: getTextColor(), backgroundColor: taskTheme.background }}
+                  />
+                )
+            }
+          })()}
           <Button size="icon" onClick={() => saveEdit(rowIndex, { [column]: editValue })} aria-label="Save">
             <Check className="h-4 w-4" style={{ color: taskTheme.accent }} />
           </Button>
@@ -72,7 +104,7 @@ export function RenderCell({ task, rowIndex, column, editingCell, editValue, set
         <Button
           size="icon"
           variant="ghost"
-          onClick={() => startEditing(rowIndex, column, value)}
+          onClick={() => startEditing(rowIndex, column, value || "")}
           aria-label={`Edit ${column}`}
         >
           <Edit2 className="h-4 w-4" style={{ color: taskTheme.accent }} />

@@ -20,7 +20,7 @@ export interface Task {
   title: string;
   description: string;
   state: TaskState;
-  epic?: Epics;
+  epic?: string;
 }
 
 export interface Epics {
@@ -202,6 +202,7 @@ const useTaskStore = create(
         })),
       saveEdit: (taskIndex: number, updatedTask: Partial<Task>) =>
         set((state) => {
+          console.log("updatedTask", updatedTask);
           const tasks = [...state.tasks];
           tasks[taskIndex] = { ...tasks[taskIndex], ...updatedTask };
           return {
