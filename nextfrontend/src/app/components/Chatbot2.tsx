@@ -48,7 +48,7 @@ export default function Chatbot() {
         <nav className="w-full md:max-w-xs p-4 bg-gray-100 rounded-lg shadow-md max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-screen">
             <div className="flex flex-col space-y-4">
                 <div className="overflow-y-auto max-h-60 md:max-h-[calc(100vh-14rem)]" ref={messagesEndRef}>
-                    {messages.map((message, index) => (
+                    {messages.filter((message) => !message.content.startsWith("[Task suggester]") && !message.content.startsWith("[Requesting task suggestions]")).map((message, index) => (
                         <div key={index} className={`p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'} mb-2`}>
                             <strong>{message.role}:</strong> {message.content}
                         </div>
