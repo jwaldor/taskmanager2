@@ -11,7 +11,7 @@ export function RenderCell({ task, rowIndex, column, editingCell, editValue, set
 
   const renderCell = (task: Task, rowIndex: number, column: keyof Task) => {
     const isEditing = editingCell.index === rowIndex && editingCell.column === column
-    const value = column === "epic" ? task.epic!.title : task[column]
+    const value = column === "epic" ? (task.epic ? task.epic.title : "") : task[column]
 
     // Find the theme object for this task
     const taskTheme = themes.find(t => t.name === currentTheme) || themes[0]
@@ -92,6 +92,7 @@ export function TaskRow({ task, rowIndex, editingCell, editValue, setEditValue, 
     <TableCell className="font-medium">{RenderCell({ task, rowIndex: rowIndex, column: "title", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
     <TableCell>{RenderCell({ task, rowIndex: rowIndex, column: "description", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
     <TableCell>{RenderCell({ task, rowIndex: rowIndex, column: "state", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
+    <TableCell>{RenderCell({ task, rowIndex: rowIndex, column: "epic", editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, themes, currentTheme })}</TableCell>
     <TableCell>
       <Button
         size="icon"

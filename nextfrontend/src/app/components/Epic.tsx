@@ -97,7 +97,7 @@ export function EpicRow({ task, rowIndex }: { task: Epics, rowIndex: number }) {
         size="icon"
         variant="outline"
         onClick={() => deleteEpic(task.id)}
-        aria-label="Delete task"
+        aria-label="Delete an epic"
       >
         <X className="h-4 w-4" style={{ color: taskTheme.accent }} />
       </Button>
