@@ -33,7 +33,7 @@ interface TaskStore {
   tasks: Task[];
   epics: Epics[];
   createEpic: () => void;
-  editEpic: (id: string, updatedEpic: Partial<Epics>) => void;
+  saveEpic: (id: string, updatedEpic: Partial<Epics>) => void;
   deleteEpic: (id: string) => void;
   themes: Theme[];
   createTheme: () => void;
@@ -73,7 +73,7 @@ const useTaskStore = create(
           return { epics: [...state.epics, newEpic] };
         });
       },
-      editEpic: (id: string, updatedEpic: Partial<Epics>) => {
+      saveEpic: (id: string, updatedEpic: Partial<Epics>) => {
         set((state) => {
           const epics = [...state.epics];
           const index = epics.findIndex((epic) => epic.id === id);
