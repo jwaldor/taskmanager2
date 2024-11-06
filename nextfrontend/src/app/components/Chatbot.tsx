@@ -27,7 +27,7 @@ export default function Chatbot() {
             <div className="flex flex-col space-y-4">
                 <div className="overflow-y-auto max-h-60" ref={messagesEndRef}>
                     {messages.map((message, index) => (
-                        <div key={index} className={`p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'}`}>
+                        <div key={index} className={`p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'} mb-2`}>
                             <strong>{message.role}:</strong> {message.content}
                         </div>
                     ))}
