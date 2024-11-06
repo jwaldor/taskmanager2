@@ -24,6 +24,9 @@ export default function Navigation() {
                     {pathname !== "/theme" && (
                         <a href="/theme" className="text-white hover:text-gray-300">Set Theme</a>
                     )}
+                    {pathname !== "/epics" && (
+                        <a href="/epics" className="text-white hover:text-gray-300">Epics</a>
+                    )}
                 </div>
             </div>
         </nav>
