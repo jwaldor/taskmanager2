@@ -26,12 +26,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-hidden`}>
         <Navigation />
         <main className="flex flex-row  w-full">
           <div className="w-full">
-            {children}
+            <div className="overflow-y-auto max-h-[calc(100vh)]">
+              {children}
+            </div>
           </div>
+          {/* {children} */}
           <Chatbot />
 
         </main>

@@ -23,6 +23,23 @@ export async function getChatResponse(messages: MessagesType) {
   return chatCompletion.choices[0].message.content;
 }
 
+export async function getChatResponseCustom(
+  messages: MessagesType,
+  systemPrompt: string
+) {
+  const chatCompletion = await client.chat.completions.create({
+    messages: [
+      {
+        role: "system",
+        content: systemPrompt,
+      },
+      ...messages,
+    ],
+    model: "gpt-4o-mini",
+  });
+  return chatCompletion.choices[0].message.content;
+}
+
 export async function extractTasks(text: string): Promise<{
   tasks: { title: string; description: string; state: TaskState }[];
 }> {

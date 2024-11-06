@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getChatResponse } from "./llm";
+import { getChatResponse, getChatResponseCustom } from "./llm";
 import { extractTasks, suggestTasks } from "./llm";
 import useTaskStore, { Task } from "../tasks";
 type SpeakerType = "user" | "assistant";
@@ -32,32 +32,62 @@ export const useChatStore = create<ChatStore>((set) => ({
   // },
 }));
 
-export async function getResponse(message: string) {
-  useChatStore.getState().addMessage({ role: "user", content: message });
+// export async function getResponse(message: string) {
+//   useChatStore.getState().addMessage({ role: "user", content: message });
+//   const allMessages = useChatStore.getState().messages;
+//   console.log("allMessages", allMessages);
+//   const response = await getChatResponse(allMessages);
+//   console.log("response", response);
+
+//   const tasks = response ? await extractTasks(response) : undefined;
+//   console.log("tasks", tasks);
+
+//   useChatStore.getState().addMessage({
+//     role: "assistant",
+//     content:
+//       String(response) +
+//       (tasks && tasks.tasks.length > 0
+//         ? "\n" +
+//           "Creating tasks: " +
+//           tasks.tasks.map((task) => task.title).join(", ")
+//         : ""),
+//   });
+
+//   if (tasks) {
+//     console.log("creating provided tasks", tasks.tasks);
+//     useTaskStore.getState().createProvidedTasks(tasks.tasks);
+//   }
+//   return response;
+// }
+
+const BASIC_SYSTEM_PROMPT =
+  "You are a helpful assistant who helps the user strategize what to do in a compassionate, empathetic, and creative way. You help the user think of things that they would not have without you.";
+
+export async function getResponse(inputValue: string) {
+  useChatStore.getState().addMessage({
+    role: "user",
+    content: inputValue,
+  });
   const allMessages = useChatStore.getState().messages;
-  console.log("allMessages", allMessages);
-  const response = await getChatResponse(allMessages);
-  console.log("response", response);
-
-  const tasks = response ? await extractTasks(response) : undefined;
-  console.log("tasks", tasks);
-
+  const response = await getChatResponseCustom(
+    allMessages,
+    BASIC_SYSTEM_PROMPT
+  );
   useChatStore.getState().addMessage({
     role: "assistant",
-    content:
-      String(response) +
-      (tasks && tasks.tasks.length > 0
-        ? "\n" +
-          "Creating tasks: " +
-          tasks.tasks.map((task) => task.title).join(", ")
-        : ""),
+    content: response ?? "",
   });
-
-  if (tasks) {
-    console.log("creating provided tasks", tasks.tasks);
-    useTaskStore.getState().createProvidedTasks(tasks.tasks);
-  }
   return response;
+}
+
+export async function createProposedTasks() {
+  const { createProvidedTasks } = useTaskStore.getState();
+  const { proposedTasks } = useChatStore.getState();
+  createProvidedTasks(proposedTasks);
+}
+
+export async function rejectProposedTasks() {
+  useChatStore.getState().setProposedTasks([]);
 }
 
 export async function handleSuggestTasks() {
