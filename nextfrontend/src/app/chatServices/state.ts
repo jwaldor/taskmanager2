@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { getChatResponse } from "./llm";
 import { extractTasks } from "./llm";
-import useTaskStore from "../tasks";
+import useTaskStore, { Task } from "../tasks";
 type SpeakerType = "user" | "assistant";
 type MessageType = { role: SpeakerType; content: string };
 export type MessagesType = MessageType[];
@@ -11,6 +11,8 @@ type ChatStore = {
   addMessage: (message: MessageType) => void;
   inputValue: string;
   setInputValue: (value: string) => void;
+  proposedTasks: Task[];
+  setProposedTasks: (tasks: Task[]) => void;
   // getResponse: () => void;
 };
 
@@ -20,6 +22,8 @@ export const useChatStore = create<ChatStore>((set) => ({
     set((state) => ({ messages: [...state.messages, message] })),
   inputValue: "",
   setInputValue: (value) => set({ inputValue: value }),
+  proposedTasks: [],
+  setProposedTasks: (tasks) => set({ proposedTasks: tasks }),
   // getResponse: async () => {
   //   const response = await getResponse(state.messages);
   //   set((state) => ({
