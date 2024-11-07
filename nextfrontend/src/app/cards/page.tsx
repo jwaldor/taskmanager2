@@ -1,63 +1,145 @@
 "use client"
 
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { Card, CardContent } from "@/components/ui/card"
+import useTaskStore from '../tasks'
+import { Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { TaskRow } from "../components/Task"
-import useTaskStore from '../tasks' // Adjust the import path based on your project structure
-import { v4 as uuidv4 } from 'uuid';
-const TravelComponent = ({ title, subtitle, description }: { title: string; subtitle: string; description: string }) => {
+import { Badge } from "@/components/ui/badge"
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel"
+import { useEffect, useState } from 'react';
+
+interface TaskCardProps {
+  title: string
+  subtitle: string
+  description: string
+}
+
+const TaskCard = ({ title, subtitle, description }: TaskCardProps) => {
   return (
-    <div className="w-64 p-4 bg-white rounded-lg shadow-md relative group">
-      <p className="text-sm text-gray-800 mb-2">
-        {title}
-      </p>
-      {subtitle.length > 0 && <button className="bg-yellow-400 text-gray-800 text-xs font-bold py-1 px-2 rounded mb-3">
-        {subtitle}
-      </button>}
-      <div className="flex items-center justify-between">
-        <span className="text-gray-500 text-sm">
-          {description.length > 100 ? description.slice(0, 100) + '...' : description}
-        </span>
-        <span className="absolute left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-gray-700 text-white text-xs rounded p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          {description}
-        </span>
+    <Card className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
+      <CardContent className="p-4 space-y-3">
+        <h3 className="font-semibold text-sm text-foreground">
+          {title}
+        </h3>
+        {subtitle && (
+          <Badge variant="secondary" className="font-medium">
+            {subtitle}
+          </Badge>
+        )}
+        <div className="relative">
+          <p className="text-sm text-muted-foreground line-clamp-2">
+            {description}
+          </p>
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <Card className="absolute z-10 p-3 w-[280px] -top-2 left-1/2 -translate-x-1/2 shadow-xl">
+              <p className="text-sm text-foreground">{description}</p>
+            </Card>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+const Column = ({ title, children }: { title: string; children: React.ReactNode }) => (
+  <div className="flex-1">
+    <div className="bg-muted/50 rounded-lg p-4 h-full">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-semibold text-muted-foreground text-sm tracking-tight">
+          {title}
+        </h2>
+        <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Plus className="h-4 w-4" />
+        </Button>
+      </div>
+      <div className="space-y-3">
+        {children}
       </div>
     </div>
-  );
-};
+  </div>
+)
 
+export default function TaskBoard() {
+  const { epics, tasks } = useTaskStore()
+  const [isMd, setIsMd] = useState(false)
 
-export default function AllTasks() {
-  const { epics, themes, currentTheme, tasks, editingCell, editValue, setEditValue, cancelEditing, saveEdit, startEditing, deleteTask, createTask } = useTaskStore()
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMd(window.innerWidth >= 768) // Assuming 'md' breakpoint is 768px
+    }
 
+    window.addEventListener('resize', handleResize)
+    handleResize() // Call on mount to set initial state
+
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   return (
-    <div className="w-full h-full overflow-auto">
-      <div className="flex flex-col md:flex-row m-8 gap-8">
-        <div className="flex flex-col max-sm:w-1/3 bg-gray-200 mt-14 rounded text-gray-500 font-semibold p-1 md:w-3/4 gap-2">
-          <span className="pt-1 pl-2 pb-1">PENDING</span>
-          {tasks.map((task, index) => (
-            <TravelComponent
-              key={index}
-              title={task.title}
-              subtitle={epics.find(epic => epic.id === task.epic)?.title || ""}
-              description={task.description}
-            />
-          ))}
-        </div>
-        <div className="flex flex-col max-sm:w-1/3 bg-gray-200 mt-14 rounded text-gray-500 font-semibold p-1 md:w-3/4">
-          <span className="pt-1 pl-2 pb-1">IN PROGRESS</span>
-        </div>
-        <div className="flex flex-col max-sm:w-1/3 bg-gray-200 mt-14 rounded text-gray-500 font-semibold p-1 md:w-3/4">
-          <span className="pt-1 pl-2 pb-1">COMPLETED</span>
-        </div>
+    <div className="flex-1 overflow-hidden p-6">
+      <div className="flex gap-6 h-full overflow-x-auto pb-4">
+        {!isMd ? ( // Conditional rendering based on screen size
+          <Carousel className="md:flex md:gap-6 md:basis-full">
+            <CarouselContent>
+              <CarouselItem>
+                <Column title="PENDING">
+                  {tasks.map((task, index) => (
+                    <TaskCard
+                      key={index}
+                      title={task.title}
+                      subtitle={epics.find(epic => epic.id === task.epic)?.title || ""}
+                      description={task.description}
+                    />
+                  ))}
+                </Column>
+              </CarouselItem>
+              <CarouselItem>
+                <Column title="IN PROGRESS">
+                  {tasks.map((task, index) => (
+                    <TaskCard
+                      key={index}
+                      title={task.title}
+                      subtitle={epics.find(epic => epic.id === task.epic)?.title || ""}
+                      description={task.description}
+                    />
+                  ))}
+                </Column>
+              </CarouselItem>
+              <CarouselItem>
+                <Column title="COMPLETED">
+                  <div>COMPLETED</div>
+                </Column>
+              </CarouselItem>
+            </CarouselContent>
+            <CarouselPrevious className="fixed left-2 top-1/2 -translate-y-1/2" />
+            <CarouselNext className="fixed right-2 top-1/2 -translate-y-1/2" />
+          </Carousel>
+        ) : (
+          <div className="flex flex-row gap-4">
+            <Column title="PENDING">
+              {tasks.map((task, index) => (
+                <TaskCard
+                  key={index}
+                  title={task.title}
+                  subtitle={epics.find(epic => epic.id === task.epic)?.title || ""}
+                  description={task.description}
+                />
+              ))}
+            </Column>
+            <Column title="IN PROGRESS">
+              {tasks.map((task, index) => (
+                <TaskCard
+                  key={index}
+                  title={task.title}
+                  subtitle={epics.find(epic => epic.id === task.epic)?.title || ""}
+                  description={task.description}
+                />
+              ))}
+            </Column>
+            <Column title="COMPLETED">
+              <div>COMPLETED</div>
+            </Column>
+          </div>
+        )}
       </div>
     </div>
   )
