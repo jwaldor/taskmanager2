@@ -147,3 +147,51 @@ export async function suggestTasks(messages: MessagesType): Promise<{
   }
   throw new Error("Max retries reached for GPT call");
 }
+
+export async function chooseMode(messages: MessagesType): Promise<{
+  mode: "discuss" | "generate" | "workshop";
+}> {
+  const maxRetries = 5; // Maximum number of retries
+  let attempt = 0;
+
+  while (attempt < maxRetries) {
+    try {
+      const msg = await client.chat.completions.create({
+        messages: [
+          {
+            role: "system",
+            content:
+              "You are an AI assistant that helps the user achieve their goals. What mode should you be in? (discuss how the user can achieve their goals; generate concrete tasks; and workshop tasks with the user to make them more effective and actionable)",
+          },
+          ...messages,
+        ], // Cast to the correct type
+        model: "gpt-4o-mini",
+        response_format: zodResponseFormat(
+          z.object({
+            mode: z
+              .enum(["discuss", "generate", "workshop"])
+              .describe(
+                "Only generate if the user has specifically asked you to."
+              ),
+          }),
+          "mode"
+        ),
+      });
+      if (!msg.choices[0].message.content) {
+        throw new Error("No response from GPT");
+      }
+      return JSON.parse(msg.choices[0].message.content);
+    } catch (error) {
+      console.error(error);
+      const typedError = error as { code: string };
+      if (typedError.code === "rate_limit_exceeded") {
+        attempt++;
+        const waitTime = 200; // Wait for 200 ms
+        await new Promise((resolve) => setTimeout(resolve, waitTime));
+      } else {
+        throw error; // Rethrow if it's not a rate limit error
+      }
+    }
+  }
+  throw new Error("Max retries reached for GPT call");
+}

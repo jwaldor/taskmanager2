@@ -9,6 +9,7 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
+import { handleSendMessage2 } from '../chatServices/state_chatlogic';
 
 function TaskCreationBox({ tasks }: { tasks: Task[] }) {
     return (
@@ -48,8 +49,8 @@ export default function Chatbot() {
         <nav className="w-full md:max-w-xs p-4 bg-gray-100 rounded-lg shadow-md max-md:fixed max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-screen">
             <div className="flex flex-col space-y-4">
                 <div className="overflow-y-auto max-h-60 md:max-h-[calc(100vh-14rem)]" ref={messagesEndRef}>
-                    {messages.filter((message) => !message.content.startsWith("[Task suggester]") && !message.content.startsWith("[Requesting task suggestions]")).map((message, index) => (
-                        <div key={index} className={`p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'} mb-2`}>
+                    {messages.filter((message) => !message.content.startsWith("[Task suggester]") && !message.content.startsWith("[Requesting task suggestions]") && !message.content.startsWith("[Thoughts]")).map((message, index) => (
+                        <div key={index} className={`whitespace-pre-wrap p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-black'} mb-2`}>
                             <strong>{message.role}:</strong> {message.content}
                         </div>
                     ))}
@@ -62,7 +63,7 @@ export default function Chatbot() {
                         onChange={handleInputChange}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
-                                handleSendMessage();
+                                handleSendMessage2();
                             }
                         }}
                         placeholder={proposedTasks.length === 0 ? "Type your message..." : "Are you ready to act on these tasks now? If not, propose changes..."}

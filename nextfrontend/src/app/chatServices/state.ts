@@ -18,7 +18,15 @@ type ChatStore = {
 };
 
 export const useChatStore = create<ChatStore>((set) => ({
-  messages: [],
+  messages: [
+    {
+      role: "assistant",
+      content: `Greetings. I am an AI assistant that helps you achieve your goals. I can 
+    1. discuss how you can achieve your goals
+    2. generate concrete tasks
+    3. workshop tasks to make them more effective and actionable`,
+    },
+  ],
   addMessage: (message) =>
     set((state) => ({ messages: [...state.messages, message] })),
   setMessages: (messages: MessagesType) =>
@@ -68,7 +76,7 @@ const BASIC_SYSTEM_PROMPT =
 
 export async function handleSendMessage() {
   const inputValue = useChatStore.getState().inputValue;
-  const messages = useChatStore.getState().messages;
+  const messages = structuredClone(useChatStore.getState().messages);
   messages.push({
     role: "user",
     content: inputValue,
